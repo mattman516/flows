@@ -1,0 +1,51 @@
+{
+    "providers": {
+        "awscloudformation": {
+            "AuthRoleName": "flows-20190322094624-authRole",
+            "UnauthRoleArn": "arn:aws:iam::172885992056:role/flows-20190322094624-unauthRole",
+            "AuthRoleArn": "arn:aws:iam::172885992056:role/flows-20190322094624-authRole",
+            "Region": "us-east-1",
+            "DeploymentBucketName": "flows-20190322094624-deployment",
+            "UnauthRoleName": "flows-20190322094624-unauthRole",
+            "StackName": "flows-20190322094624",
+            "StackId": "arn:aws:cloudformation:us-east-1:172885992056:stack/flows-20190322094624/451335c0-4cb1-11e9-ab25-0a9be5775b42"
+        }
+    },
+    "hosting": {
+        "S3AndCloudFront": {
+            "service": "S3AndCloudFront",
+            "providerPlugin": "awscloudformation",
+            "providerMetadata": {
+                "s3TemplateURL": "https://s3.amazonaws.com/flows-20190322094624-deployment/amplify-cfn-templates/hosting/template.json",
+                "logicalId": "hostingS3AndCloudFront"
+            },
+            "lastPushTimeStamp": "2019-03-22T19:07:18.006Z",
+            "output": {
+                "S3BucketSecureURL": "https://123.flowchoice.net.s3.amazonaws.com",
+                "WebsiteURL": "http://123.flowchoice.net.s3-website-us-east-1.amazonaws.com",
+                "Region": "us-east-1",
+                "HostingBucketName": "123.flowchoice.net"
+            },
+            "lastPushDirHash": "xiaBgdkhkiz0JEbSkDvz1sJ0zVA="
+        }
+    },
+    "api": {
+        "flows": {
+            "service": "AppSync",
+            "providerPlugin": "awscloudformation",
+            "output": {
+                "securityType": "API_KEY",
+                "GraphQLAPIIdOutput": "newtihr6zzed7fh2prnvmcgvu4",
+                "GraphQLAPIEndpointOutput": "https://gumxwz3jwvfolb72q3psl747qu.appsync-api.us-east-1.amazonaws.com/graphql",
+                "GraphQLAPIKeyOutput": "da2-mcw2yfvvtnaipfuwnqivs4ta7i"
+            },
+            "providerMetadata": {
+                "s3TemplateURL": "https://s3.amazonaws.com/flows-20190322094624-deployment/amplify-cfn-templates/api/cloudformation-template.json",
+                "logicalId": "apiflows"
+            },
+            "lastPushTimeStamp": "2019-03-22T19:07:18.011Z",
+            "lastPushDirHash": "mBx6hzt+cgRAWnvfA7zeYGgvacU="
+        }
+    },
+    "storage": {}
+}

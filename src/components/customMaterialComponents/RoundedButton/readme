@@ -1,0 +1,4 @@
+Takes material ui button then changes
+    -   All buttons will have pill shape, half circles on the end
+    -   All buttons will have regular case text (material ui uses ALL CAPS for buttons)
+    -   Added `circled` prop. Will make any button perfect circle, like the material ui fab
