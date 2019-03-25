@@ -4,6 +4,7 @@ import Uuid from "uuid/v4";
 const startingState = {
   currTest: {},
   answerList: [],
+  testList: [],
   loading: true,
 };
 
@@ -34,6 +35,13 @@ const flows = (state = startingState, action) => {
       return {
         ...state,
         loading: false
+      }
+    }
+    
+    case "ON_LOAD_ALL_TESTS": {
+      return {
+        ...state,
+        testList: action.testList
       }
     }
 

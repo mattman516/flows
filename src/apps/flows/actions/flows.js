@@ -1,7 +1,5 @@
-import {
-  listAnswers,
-  getTest
-} from "../../../graphql/queries";
+import { listAnswers, getTest, listTests } from "../../../graphql/queries";
+import { createAnswer, createTest } from "../../../graphql/mutations";
 import { API, graphqlOperation } from "aws-amplify";
 
 export const doneLoading = () => ({
@@ -10,17 +8,21 @@ export const doneLoading = () => ({
 export const isLoading = () => ({
   type: "IS_LOADING"
 });
-export const loadCurrentAnswers = (answer) => ({
+export const loadCurrentAnswers = answer => ({
   type: "ON_LOAD_CURRENT_ANSWERS",
   answer
 });
-export const loadCurrentTest = (test) => ({
+export const loadCurrentTest = test => ({
   type: "ON_LOAD_CURRENT_TEST",
   test
 });
+export const loadAllTests = testList => ({
+  type: "ON_LOAD_ALL_TESTS",
+  testList
+});
 
 export const downloadCurrentTest = id => async dispatch => {
-  console.log("STARTING")
+  console.log("STARTING");
   let currTest = null;
   dispatch(isLoading());
   try {
@@ -28,9 +30,9 @@ export const downloadCurrentTest = id => async dispatch => {
     currTest = currTest.data.getTest;
     console.log("SUCCESS: LOAD CURRENT TEST ");
     dispatch(loadCurrentTest(currTest));
-    if(!currTest.is_solution && currTest.answers)
+    if (currTest.answers)
       dispatch(downloadCurrentAnswers(currTest.id));
-    else{
+    else {
       dispatch(loadCurrentAnswers([]));
       dispatch(doneLoading());
     }
@@ -46,7 +48,7 @@ export const downloadCurrentAnswers = id => async dispatch => {
   try {
     let currAnswers = await API.graphql(
       graphqlOperation(listAnswers, {
-        filter: { testid: {eq: id }},
+        filter: { testid: { eq: id } },
         limit: 1000
       })
     );
@@ -60,3 +62,31 @@ export const downloadCurrentAnswers = id => async dispatch => {
   }
 };
 
+export const createNewAnswer = answer => async dispatch => {
+  dispatch(isLoading());
+  console.log("START: CREATE ANSWER");
+  await API.graphql(graphqlOperation(createAnswer, { input: answer }));
+  dispatch(createNewTest())
+  window.location.href = "/create/" + answer.destination;
+  dispatch(doneLoading());
+};
+
+
+export const createNewTest = newTest => async dispatch => {
+  dispatch(isLoading());
+  console.log("START: CREATE ANSWER");
+  await API.graphql(graphqlOperation(createTest, { input: newTest }));
+  dispatch(doneLoading());
+};
+
+export const getQuestionOptions = theheadid => async dispatch => {
+  dispatch(isLoading());
+  console.log("START: GET ALL QUESTIONS");
+  console.log(theheadid);
+  let testList = await API.graphql(
+    graphqlOperation(listTests, { filter: { headid: { eq: theheadid } } })
+  );
+  console.log("TESTLSIT" + testList)
+  dispatch(loadAllTests(testList.data.listTests.items));
+  dispatch(doneLoading());
+};

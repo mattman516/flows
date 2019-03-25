@@ -1,6 +1,6 @@
 {
-    "projectName": "flows",
-    "projectPath": "C:\\dev\\flows",
+    "projectName": "flow",
+    "projectPath": "C:\\dev\\flow",
     "defaultEditor": "code",
     "frontendHandler": {
         "javascript": "C:\\Users\\mattm\\AppData\\Roaming\\npm\\node_modules\\@aws-amplify\\cli\\node_modules\\amplify-frontend-javascript"

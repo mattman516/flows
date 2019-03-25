@@ -5,8 +5,8 @@ export const createTest = `mutation CreateTest($input: CreateTestInput!) {
   createTest(input: $input) {
     id
     question
+    headid
     answers
-    is_solution
   }
 }
 `;
@@ -14,8 +14,8 @@ export const updateTest = `mutation UpdateTest($input: UpdateTestInput!) {
   updateTest(input: $input) {
     id
     question
+    headid
     answers
-    is_solution
   }
 }
 `;
@@ -23,8 +23,8 @@ export const deleteTest = `mutation DeleteTest($input: DeleteTestInput!) {
   deleteTest(input: $input) {
     id
     question
+    headid
     answers
-    is_solution
   }
 }
 `;

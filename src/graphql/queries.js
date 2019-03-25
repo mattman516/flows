@@ -5,8 +5,8 @@ export const getTest = `query GetTest($id: ID!) {
   getTest(id: $id) {
     id
     question
+    headid
     answers
-    is_solution
   }
 }
 `;
@@ -19,8 +19,8 @@ export const listTests = `query ListTests(
     items {
       id
       question
+      headid
       answers
-      is_solution
     }
     nextToken
   }

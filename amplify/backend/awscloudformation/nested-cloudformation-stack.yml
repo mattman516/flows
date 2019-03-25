@@ -78,24 +78,24 @@
 				}
 			}
 		},
+		"apiflow": {
+			"Type": "AWS::CloudFormation::Stack",
+			"Properties": {
+				"TemplateURL": "https://s3.amazonaws.com/flow-20190325172244-deployment/amplify-cfn-templates/api/cloudformation-template.json",
+				"Parameters": {
+					"AppSyncApiName": "flow",
+					"schemaGraphql": "s3://flow-20190325172244-deployment/amplify-appsync-files/schema.graphql.1553552971137",
+					"ResolverBucket": "flow-20190325172244-deployment",
+					"ResolverRootKey": "amplify-appsync-files",
+					"DeploymentTimestamp": "1553552971137"
+				}
+			}
+		},
 		"hostingS3AndCloudFront": {
 			"Type": "AWS::CloudFormation::Stack",
 			"Properties": {
-				"TemplateURL": "https://s3.amazonaws.com/flows-20190322094624-deployment/amplify-cfn-templates/hosting/template.json",
+				"TemplateURL": "https://s3.amazonaws.com/flow-20190325172244-deployment/amplify-cfn-templates/hosting/template.json",
 				"Parameters": {}
-			}
-		},
-		"apiflows": {
-			"Type": "AWS::CloudFormation::Stack",
-			"Properties": {
-				"TemplateURL": "https://s3.amazonaws.com/flows-20190322094624-deployment/amplify-cfn-templates/api/cloudformation-template.json",
-				"Parameters": {
-					"AppSyncApiName": "flows",
-					"schemaGraphql": "s3://flows-20190322094624-deployment/amplify-appsync-files/schema.graphql.1553279910027",
-					"ResolverBucket": "flows-20190322094624-deployment",
-					"ResolverRootKey": "amplify-appsync-files",
-					"DeploymentTimestamp": "1553279910027"
-				}
 			}
 		}
 	},

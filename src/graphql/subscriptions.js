@@ -5,8 +5,8 @@ export const onCreateTest = `subscription OnCreateTest {
   onCreateTest {
     id
     question
+    headid
     answers
-    is_solution
   }
 }
 `;
@@ -14,8 +14,8 @@ export const onUpdateTest = `subscription OnUpdateTest {
   onUpdateTest {
     id
     question
+    headid
     answers
-    is_solution
   }
 }
 `;
@@ -23,8 +23,8 @@ export const onDeleteTest = `subscription OnDeleteTest {
   onDeleteTest {
     id
     question
+    headid
     answers
-    is_solution
   }
 }
 `;

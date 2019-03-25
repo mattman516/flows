@@ -3,6 +3,7 @@ import { connect } from "react-redux";
 import styled from "styled-components";
 import { Route, Redirect } from "react-router-dom";
 import FlowTest from "./containers/views/FlowTestViewContainer";
+import CreateFlow from "./containers/views/CreateFlowViewContainer";
 const ContentWrapper = styled.div`
   max-width: 1180px;
   minheight: 2000px;
@@ -15,7 +16,8 @@ class AppPane extends Component {
   render() {
     return (
       <ContentWrapper>
-        <Route path="/:id" component={FlowTest} />
+        <Route exact path="/:id" component={FlowTest} />
+        <Route path="/create/:id" component={CreateFlow} />
         {/* <LoadingContainer/> */}
       </ContentWrapper>
     );

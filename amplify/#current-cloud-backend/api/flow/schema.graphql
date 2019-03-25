@@ -1,0 +1,13 @@
+type Test @model {
+  id: ID!
+  question: String!
+  headid: ID!
+  answers: [String]
+}
+
+type Answer @model {
+  id: ID!
+  testid: ID
+  answer: String!
+  destination: ID
+}
