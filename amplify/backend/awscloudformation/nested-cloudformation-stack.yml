@@ -84,10 +84,11 @@
 				"TemplateURL": "https://s3.amazonaws.com/flow-20190325172244-deployment/amplify-cfn-templates/api/cloudformation-template.json",
 				"Parameters": {
 					"AppSyncApiName": "flow",
-					"schemaGraphql": "s3://flow-20190325172244-deployment/amplify-appsync-files/schema.graphql.1553552971137",
-					"ResolverBucket": "flow-20190325172244-deployment",
-					"ResolverRootKey": "amplify-appsync-files",
-					"DeploymentTimestamp": "1553552971137"
+					"DynamoDBBillingMode": "PAY_PER_REQUEST",
+					"APIKeyExpirationEpoch": "0",
+					"S3DeploymentBucket": "flow-20190325172244-deployment",
+					"S3DeploymentRootKey": "amplify-appsync-files/a59d6a16c58e4a4b94b5f2fd02612cb234892581",
+					"env": "NONE"
 				}
 			}
 		},
@@ -95,7 +96,10 @@
 			"Type": "AWS::CloudFormation::Stack",
 			"Properties": {
 				"TemplateURL": "https://s3.amazonaws.com/flow-20190325172244-deployment/amplify-cfn-templates/hosting/template.json",
-				"Parameters": {}
+				"Parameters": {
+					"bucketName": "124.flowchoice.net",
+					"env": "NONE"
+				}
 			}
 		}
 	},

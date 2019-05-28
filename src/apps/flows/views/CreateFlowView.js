@@ -12,7 +12,10 @@ import TextField from "@material-ui/core/TextField";
 import DialogActions from "@material-ui/core/DialogActions";
 import Select from "@material-ui/core/Select";
 import MenuItem from "@material-ui/core/MenuItem";
-import { createTest } from "../../../graphql/mutations";
+import IconButton from "@material-ui/core/IconButton";
+import SaveIcon from "@material-ui/icons/Save";
+import DeleteIcon from "@material-ui/icons/Delete";
+// import { createTest } from "../../../graphql/mutations";
 
 const Uuid = require("uuid/v4");
 
@@ -32,6 +35,7 @@ const StyledButton = withStyles({
 
 const AnswerDialog = ({
   open,
+  currTest,
   handleClose,
   handleAnswerAdd,
   answerText,
@@ -40,7 +44,9 @@ const AnswerDialog = ({
   saveAnswer,
   destinationVal,
   destinationOptions,
-  destinationChange
+  destinationChange,
+  createTest,
+  updateTest
 }) => (
   <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
     <DialogTitle id="form-dialog-title">Answer</DialogTitle>
@@ -58,7 +64,10 @@ const AnswerDialog = ({
         onChange={event => handleAnswerAdd(event.target.value)}
         value={answerText}
       />
-      <Select value={destinationVal} onChange={event => destinationChange(event.target.value)}>
+      <Select
+        value={destinationVal}
+        onChange={event => destinationChange(event.target.value)}
+      >
         <MenuItem value="new">New Question</MenuItem>
         {destinationOptions.map((val, key) => (
           <MenuItem value={val.id}>{val.question}</MenuItem>
@@ -72,13 +81,18 @@ const AnswerDialog = ({
       <Button
         onClick={event => {
           handleClose();
-          let newAns = constructAnswer(answerText);
-          let newTest = constructNewTest(newAns.id);
-          saveAnswer(newAns);
-          if(destinationVal==="new"){
+          if (destinationVal === "new") {
+            let newTest = constructNewTest()
+            let newAns = constructAnswer(answerText, newTest.id);
+            saveAnswer(newAns);
             createTest(newTest);
+            updateTest({...currTest, answers: (currTest.answers ? currTest.answers : []).push(newAns.id)});
+          }else{
+            let newAns = constructAnswer(answerText, destinationVal);
+            saveAnswer(newAns);
+            updateTest({...currTest, answers: (currTest.answers ? currTest.answers : []).push(newAns.id)});
           }
-          console.log(constructAnswer(answerText));
+          // console.log(newTest);
         }}
         color="primary"
         variant="outlined"
@@ -90,7 +104,13 @@ const AnswerDialog = ({
 );
 
 class CreateFlow extends React.Component {
-  state = { answerDialogOpen: false, answerText: "", nextDestination: "new" };
+  state = {
+    test: null,
+    answerDialogOpen: false,
+    answerText: "",
+    nextDestination: "new",
+    newQuestion: ""
+  };
 
   handleClickOpen = () => {
     this.setState({ answerDialogOpen: true });
@@ -105,8 +125,23 @@ class CreateFlow extends React.Component {
   };
 
   handleDestinationChange = val => {
-    this.setState({nextDestination: val})
+    console.log(val);
+    this.setState({ nextDestination: val });
+  };
+
+  handleQuestionChange = val => {
+    this.setState({newQuestion: val});
   }
+
+  componentDidUpdate = prevProps => {
+    if (this.props.testId !== prevProps.testId) {
+      this.props.downloadCurrentTest(this.props.testId);
+    }
+    if(this.props.currTest && this.props.currTest !== prevProps.currTest){
+      this.setState({newQuestion: this.props.currTest.question});
+      this.props.getAllQuestions(this.props.currTest.headid || this.props.testId);
+    }
+  };
 
   componentDidMount = () => {
     this.props.downloadCurrentTest(this.props.testId);
@@ -116,26 +151,45 @@ class CreateFlow extends React.Component {
   render() {
     let { currTest, testId, answers, loading } = this.props;
 
-    let constructNewAnswer = ans => {
+    let constructNewAnswer = (ans,dest) => {
+      dest = (dest === "new") ? null : dest;
       return {
+        id: Uuid(),
         testid: testId,
-        destination: Uuid(),
+        destination: dest || Uuid(),
         answer: ans
       };
     };
 
-    let constructNewTest = (id) => {
+    let constructNewTest = () => {
       return {
-        id: id,
-        headid: currTest.headid
-      }
-    }
+        id: Uuid(),
+        question: "Edit Your Question",
+        headid: currTest.headid,
+        answers: []
+      };
+    };
 
     return (
-      <ContentWrapper>
+      <div>
         {!loading && (
-          <div>
-            <Typography variant={"h2"}> {currTest.question} </Typography>
+          <ContentWrapper>
+            <div>
+              <TextField fullWidth value={this.state.newQuestion} onChange={e => this.handleQuestionChange(e.target.value)} />
+              <IconButton
+                onClick={e =>{
+                  let updatedTest = {
+                    ...this.props.currTest,
+                    question: this.state.newQuestion
+                  };
+                  console.log(updatedTest);
+                  this.props.updateTest(updatedTest);
+                }
+                }
+              >
+                <SaveIcon />
+              </IconButton>
+            </div>
             {/* <StyledLink to={"/create/" + ans.destination}> */}
             <StyledButton
               color="primary"
@@ -144,18 +198,6 @@ class CreateFlow extends React.Component {
             >
               Add new Answer
             </StyledButton>
-            <AnswerDialog
-              open={this.state.answerDialogOpen}
-              handleClose={this.handleClose}
-              handleAnswerAdd={this.handleAnswerAdd}
-              answerText={this.state.answerText}
-              saveAnswer={this.props.saveAnswer}
-              destinationOptions={this.props.testOptions}
-              destinationVal={this.state.nextDestination}
-              destinationChange={this.handleDestinationChange}
-              constructAnswer={constructNewAnswer}
-              constructNewTest={constructNewTest}
-            />
             {/* </StyledLink> */}
             {answers &&
               answers.map((ans, key) => (
@@ -171,11 +213,34 @@ class CreateFlow extends React.Component {
                       {ans.answer}
                     </StyledButton>
                   </StyledLink>
+              <IconButton
+                onClick={e =>{
+                  this.props.deleteAnswer(ans.id);
+                }
+                }
+              >
+                <DeleteIcon />
+              </IconButton>
                 </div>
               ))}
-          </div>
+          </ContentWrapper>
         )}
-      </ContentWrapper>
+        <AnswerDialog
+          open={this.state.answerDialogOpen}
+          currTest={this.props.currTest}
+          handleClose={this.handleClose}
+          handleAnswerAdd={this.handleAnswerAdd}
+          answerText={this.state.answerText}
+          saveAnswer={this.props.saveAnswer}
+          updateTest={this.props.updateTest}
+          destinationOptions={this.props.testOptions}
+          destinationVal={this.state.nextDestination}
+          destinationChange={this.handleDestinationChange}
+          constructAnswer={constructNewAnswer}
+          constructNewTest={constructNewTest}
+          createTest={this.props.createTest}
+        />
+      </div>
     );
   }
 }

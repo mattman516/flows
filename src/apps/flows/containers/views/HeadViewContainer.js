@@ -1,12 +1,9 @@
 import { connect } from "react-redux";
-import FlowView from "../../views/CreateFlowView";
+import FlowView from "../../views/HeadsView";
 import {
   downloadCurrentTest,
-  createNewAnswer,
-  createNewTest,
-  getQuestionOptions,
-  updateExistingTest,
-  onDeleteAnswer
+  getHeads,
+  createNewTest
 } from "../../actions/flows";
 
 const getId = ownProps => {
@@ -14,20 +11,17 @@ const getId = ownProps => {
 };
 
 const mapStateToProps = (state, ownProps) => ({
-  currTest: state.flows.currTest,
+  text: state.flows.currTest.question,
   testId: getId(ownProps),
   answers: state.flows.answerList,
-  testOptions: state.flows.testList,
-  loading: state.flows.loading
+  loading: state.flows.loading,
+  heads: state.flows.heads
 });
 
 const mapDispatchToProps = dispatch => ({
   downloadCurrentTest: id => dispatch(downloadCurrentTest(id)),
-  saveAnswer: answer => dispatch(createNewAnswer(answer)),
   createTest: test => dispatch(createNewTest(test)),
-  getAllQuestions: headid => dispatch(getQuestionOptions(headid)),
-  updateTest: test => dispatch(updateExistingTest(test)),
-  deleteAnswer: id => dispatch(onDeleteAnswer(id))
+  getHeads: () => dispatch(getHeads())
 });
 
 export default connect(
