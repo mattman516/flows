@@ -1,5 +1,4 @@
 import Uuid from "uuid/v4";
-import { bindActionCreators } from "../../../../../../Users/mattm/AppData/Local/Microsoft/TypeScript/3.4.5/node_modules/redux";
 
 const startingState = {
   currTest: {},
